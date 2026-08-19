@@ -21,18 +21,19 @@ app = FastAPI(
 )
 
 origins = [o.strip() for o in settings.cors_origins.split(",") if o.strip()]
-if "http://localhost:5173" not in origins:
-    origins.append("http://localhost:5173")
-if "http://localhost:3000" not in origins:
-    origins.append("http://localhost:3000")
+for origin in ["http://localhost:5173", "http://localhost:3000", "https://agenova-blue.vercel.app"]:
+    if origin not in origins:
+        origins.append(origin)
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(agents.router, prefix="/api/agents", tags=["Agents"])
