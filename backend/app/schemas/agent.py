@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from datetime import datetime
 from typing import Optional
 
@@ -31,12 +31,20 @@ class AgentResponse(BaseModel):
     rating: float
     total_requests: int
     total_revenue: float
-    tags: list[str] | None
+    tags: list[str] | None = None
     developer_id: str
     created_at: datetime
 
+    @field_validator("tags", mode="before")
+    @classmethod
+    def parse_tags(cls, v):
+        if isinstance(v, str):
+            return [t.strip() for t in v.split(",") if t.strip()]
+        return v or []
+
     class Config:
         from_attributes = True
+
 
 class AgentExecuteRequest(BaseModel):
     prompt: str
