@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "advisor-orchestrator-worker": {
+      "source": "shubhamsaboo/awesome-llm-apps",
+      "sourceType": "github",
+      "skillPath": "agent_skills/advisor-orchestrator-worker/SKILL.md",
+      "computedHash": "814b0d4ccd47c52a5d02947e2c127bf8eb2c0f4c90ed9297a79b6ff5fa36ff64"
+    },
+    "commit-archaeologist": {
+      "source": "shubhamsaboo/awesome-llm-apps",
+      "sourceType": "github",
+      "skillPath": "agent_skills/commit-archaeologist/SKILL.md",
+      "computedHash": "889e18c3527c5d70bc0411522755dde94cc84026d0796bdcab78db3c75748eeb"
+    },
+    "project-graveyard": {
+      "source": "shubhamsaboo/awesome-llm-apps",
+      "sourceType": "github",
+      "skillPath": "agent_skills/project-graveyard/SKILL.md",
+      "computedHash": "871f25c245973b4c6b8ca25b37b4934fdab2a14cd4a6021a88cf3991c6cee3a8"
+    },
+    "scope-creep-detector": {
+      "source": "shubhamsaboo/awesome-llm-apps",
+      "sourceType": "github",
+      "skillPath": "agent_skills/scope-creep-detector/SKILL.md",
+      "computedHash": "48fe76c4943ae93645df4717059de927f4e044926416be713b2349db43cd0fa3"
+    }
+  }
+}
