@@ -4,12 +4,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from passlib.hash import sha256_crypt
 
+from pydantic import BaseModel
+
 from app.database import get_db
 from app.models.api_key import APIKey
 from app.models.user import User
 from app.middleware.auth import get_current_user
 
 router = APIRouter()
+
+class APIKeyCreate(BaseModel):
+    name: str
 
 def generate_api_key() -> tuple[str, str, str]:
     key = f"ag_sk_{secrets.token_hex(24)}"
@@ -24,9 +29,9 @@ async def list_api_keys(user: User = Depends(get_current_user), db: AsyncSession
     return [{"id": k.id, "name": k.name, "key": k.key_prefix + "...", "created_at": k.created_at, "last_used": k.last_used_at, "active": k.active} for k in keys]
 
 @router.post("")
-async def create_api_key(name: str, user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+async def create_api_key(req: APIKeyCreate, user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
     full_key, hashed, prefix = generate_api_key()
-    api_key = APIKey(user_id=user.id, name=name, key_hash=hashed, key_prefix=prefix)
+    api_key = APIKey(user_id=user.id, name=req.name, key_hash=hashed, key_prefix=prefix)
     db.add(api_key)
     await db.flush()
     return {"id": api_key.id, "name": api_key.name, "key": full_key, "created_at": api_key.created_at, "active": True}
