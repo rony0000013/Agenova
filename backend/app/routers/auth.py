@@ -5,8 +5,9 @@ from app.database import get_db
 from app.schemas.auth import LoginRequest, SignupRequest, LoginResponse, UserResponse, ForgotPasswordRequest, ResetPasswordRequest, WalletLoginRequest
 
 from app.middleware.auth import get_current_user
-from app.services.auth_service import authenticate_user, create_user, create_access_token
+from app.services.auth_service import authenticate_user, create_user, create_access_token, hash_password, get_password_hash
 from app.models.user import User
+
 
 router = APIRouter()
 

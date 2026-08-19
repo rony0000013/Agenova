@@ -20,6 +20,9 @@ def verify_password(plain: str, hashed: str) -> bool:
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
+get_password_hash = hash_password
+
+
 async def authenticate_user(db: AsyncSession, email: str, password: str) -> User | None:
     result = await db.execute(select(User).where(User.email == email))
     user = result.scalar_one_or_none()
