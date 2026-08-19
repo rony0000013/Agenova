@@ -58,10 +58,18 @@ async def init_db():
     except Exception as e:
         sqlite_url = _get_sqlite_url()
         logger.warning(f"DB connection to {settings.database_url} failed ({e}). Switching to SQLite database ({sqlite_url}).")
-        engine = create_async_engine(sqlite_url, echo=settings.debug)
-        async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
+        try:
+            engine = create_async_engine(sqlite_url, echo=settings.debug)
+            async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+        except Exception as e2:
+            logger.warning(f"File SQLite failed ({e2}). Switching to in-memory SQLite fallback.")
+            engine = create_async_engine("sqlite+aiosqlite:///:memory:", echo=settings.debug)
+            async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
+
 
 async def get_db():
     async with async_session() as session:
