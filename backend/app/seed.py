@@ -1,28 +1,25 @@
 import logging
 from sqlalchemy import select
-from app.database import async_session
+from app import database
 from app.models.user import User, UserRole
 from app.models.agent import Agent, AgentCategory, AgentStatus
-
 from app.models.wallet import Wallet
 from app.models.subscription import Subscription, SubscriptionPlan, SubscriptionStatus
 from app.models.integration import Integration, IntegrationType
-
 from app.models.notification import Notification, NotificationType
-
 from app.models.api_key import APIKey
-
 from app.services.auth_service import hash_password
 
 logger = logging.getLogger("agenova.seed")
 
 async def seed_initial_data():
-    async with async_session() as db:
+    async with database.async_session() as db:
         try:
             # Check if database is already seeded
             res = await db.execute(select(User).limit(1))
             if res.scalar_one_or_none():
                 logger.info("Database already contains users. Skipping initial seed.")
+
                 return
 
             logger.info("Seeding initial data for Agenova...")
