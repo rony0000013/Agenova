@@ -17,7 +17,7 @@ export function SignInPage() {
     setError('')
     try {
       // 1. Handshake with Freighter Wallet Extension
-      const publicKey = await connectFreighter()
+      const { address: publicKey } = await connectFreighter()
 
       // 2. Authenticate with backend using Stellar public key (G...)
       await loginWithWallet(publicKey)

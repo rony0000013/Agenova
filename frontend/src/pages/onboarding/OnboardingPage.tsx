@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Zap, Bot, Wallet, Check, ArrowRight, ArrowLeft } from 'lucide-react'
+import { Zap, Bot, Wallet, Check, ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { useAuth } from '../../providers/AuthProvider'
+import { useWallet } from '../../context/WalletContext'
 import { useUIStore } from '../../stores/uiStore'
 
 const steps = [
@@ -25,9 +26,31 @@ export function OnboardingPage() {
   const [role, setRole] = useState('')
   const [company, setCompany] = useState('')
   const [interests, setInterests] = useState<string[]>([])
+  const [isConnectingWallet, setIsConnectingWallet] = useState(false)
   const navigate = useNavigate()
   const { user } = useAuth()
+  const { address, status, connect } = useWallet()
   const addToast = useUIStore((s) => s.addToast)
+
+  const handleConnectWallet = async () => {
+    setIsConnectingWallet(true)
+    try {
+      const pubKey = await connect()
+      addToast({
+        type: 'success',
+        title: 'Wallet Linked',
+        message: `Freighter connected: ${pubKey.slice(0, 6)}...${pubKey.slice(-4)}`,
+      })
+    } catch (err: any) {
+      addToast({
+        type: 'error',
+        title: 'Connection Failed',
+        message: err.message || 'Could not connect Freighter extension.',
+      })
+    } finally {
+      setIsConnectingWallet(false)
+    }
+  }
 
   const interestOptions = ['Writing', 'Coding', 'Analysis', 'Creative', 'Productivity', 'Data', 'Marketing', 'Research']
 
@@ -133,9 +156,31 @@ export function OnboardingPage() {
             <p className="text-body text-muted-slate mb-6">
               Connect a Stellar wallet to make payments and receive earnings. You can skip this and do it later.
             </p>
-            <Button className="w-full mb-3" icon={<Wallet className="h-4 w-4" />}>
-              Connect Freighter Wallet
-            </Button>
+
+            {address ? (
+              <div className="p-4 bg-pale-green/30 border border-deep-green/20 rounded-md mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-deep-green" />
+                  <div>
+                    <p className="text-xs font-semibold text-deep-green">Freighter Connected</p>
+                    <p className="text-caption font-mono text-ink">{address.slice(0, 8)}...{address.slice(-6)}</p>
+                  </div>
+                </div>
+                <Button size="sm" variant="outline" onClick={() => setStep(4)}>
+                  Continue
+                </Button>
+              </div>
+            ) : (
+              <Button
+                className="w-full mb-3"
+                icon={<Wallet className="h-4 w-4" />}
+                onClick={handleConnectWallet}
+                loading={isConnectingWallet}
+              >
+                {isConnectingWallet ? 'Connecting Freighter...' : 'Connect Freighter Wallet'}
+              </Button>
+            )}
+
             <p className="text-caption text-muted-slate text-center">
               Don&apos;t have Freighter?{' '}
               <a href="https://freighter.app" target="_blank" rel="noopener noreferrer" className="text-action-blue hover:underline">Install it</a>

@@ -12,6 +12,7 @@ import { useUIStore } from '../stores/uiStore'
 import { useAuth } from '../providers/AuthProvider'
 import { useIsMobile } from '../hooks/useMediaQuery'
 import { Breadcrumbs } from '../components/ui/Breadcrumbs'
+import { WalletConnectButton } from '../components/wallet/WalletConnectButton'
 import { useState } from 'react'
 
 const navItems = [
@@ -206,7 +207,8 @@ export function DashboardLayout() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
+              <WalletConnectButton />
               {user?.role === 'developer' && (
                 <Link to="/dashboard/agents/new">
                   <Button size="sm" icon={<Plus className="h-4 w-4" />}>

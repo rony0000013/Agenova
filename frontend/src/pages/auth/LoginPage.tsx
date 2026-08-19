@@ -5,6 +5,7 @@ import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { useAuth } from '../../providers/AuthProvider'
 import { useUIStore } from '../../stores/uiStore'
+import { connectFreighter } from '../../lib/freighter'
 
 export function LoginPage() {
   const [email, setEmail] = useState('')
@@ -52,8 +53,7 @@ export function LoginPage() {
               onClick={async () => {
                 setLoading(true)
                 try {
-                  const { connectFreighter } = await import('../../lib/freighter')
-                  const pubKey = await connectFreighter()
+                  const { address: pubKey } = await connectFreighter()
                   await loginWithWallet(pubKey)
                   addToast({ type: 'success', title: 'Wallet Connected!', message: `Signed in as ${pubKey.slice(0, 6)}...${pubKey.slice(-4)}` })
                   navigate('/dashboard')

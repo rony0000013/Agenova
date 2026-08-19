@@ -2,6 +2,7 @@ import { Outlet, Link } from 'react-router-dom'
 import { Menu, X, Zap } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '../components/ui/Button'
+import { WalletConnectButton } from '../components/wallet/WalletConnectButton'
 import { cn } from '../lib/utils'
 
 export function LandingLayout() {
@@ -29,6 +30,7 @@ export function LandingLayout() {
             </div>
 
             <div className="hidden md:flex items-center gap-3">
+              <WalletConnectButton />
               <Link to="/login">
                 <Button variant="outline" size="sm">Sign in</Button>
               </Link>
